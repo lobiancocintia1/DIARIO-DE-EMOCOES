@@ -1,2 +1,176 @@
 [Diário das Emoções](https://lobiancocintia1.github.io/diario-das-emocoes/)
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<title>Diário das Emoções</title>
+<style> 
+  body {
+    <input type="text" placeholder="Escreva seu diário">
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    display: flex;
+    background-color: #808080;
+  }
+  #entrada {
+    width: 50%;
+    margin-right: 20px;
+    display: flex;
+    flex-direction: column;
+    color: #FFFF
+  }
+  #respostas {
+    width: 50%;
+    border: 1px solid #FFFF;
+    padding: 15px;
+    max-height: 600px;
+    overflow-y: auto;
+    background-color: purple;
+    border-radius: 6px;
+    color: #FFFF;
+  }
+  textarea {
+    width: 100%;
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #FFFF;
+    resize: none;
+    overflow-wrap: break-word;
+    box-sizing: border-box;
+    min-height: 100px;
+    color: #FFFF;
+  }
+  button {
+    padding: 12px;
+    font-size: 16px;
+    margin-top: 10px;
+    cursor: pointer;
+    background-color: purple;
+    color: rgb(254, 253, 254);
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+  button:hover {
+    background-color: purple;
+  }
+  .entrada {
+    background-color: white;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    position: relative;
+  }
+  .data {
+    font-size: 14px;
+    color: purple;
+    margin-bottom: 10px;
+  }
+  .texto-entrada {
+    white-space: pre-wrap; /* mantém quebras de linha */
+    font-size: 15px;
+    color: purple;
+  }
+  .apagar-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background-color: purple;
+    border: none;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .apagar-btn:hover {
+    background-color: purple;
+  }
+</style>
+</head>
+<body>
+
+<div id="entrada">
+  <h2 style="color: #FFFF;">Escreva seu diário:</h2>
+  <form id="formulario" onsubmit="salvar(event)">
+    <textarea id="texto" placeholder=Digite aqui sua entrada..., style="background-color:  #800080"></textarea>
+    <button type="submit">Salvar Entrada</button>
+  </form>
+</div>
+
+<div id="respostas">
+ <h2 style="color: #f9f8f7;">Diário das Emoções:</h2>
+  <div id="diario"></div>
+</div>
+
+<script>
+  // Função para salvar a entrada, recebe evento para evitar submit padrão
+  function salvar(event) {
+    event.preventDefault(); // Evita recarregamento de página
+    const textoEl = document.getElementById('texto');
+    const texto = textoEl.value.trim();
+    if (!texto) {
+      alert('Por favor, escreva algo antes de salvar!');
+      return;
+    }
+    // Pega entradas atuais ou cria array vazio
+    const entradas = JSON.parse(localStorage.getItem('diarioEntradas') || '[]');
+    // Adiciona nova entrada com ID único e data atual
+    const data = new Date().toLocaleString();
+    entradas.push({ id: Date.now(), data, texto });
+    // Salva no localStorage
+    localStorage.setItem('diarioEntradas', JSON.stringify(entradas));
+    // Limpa área de texto e ajusta altura
+    textoEl.value = '';
+    ajustarHeight();
+    // Atualiza visualização das entradas
+    mostrarEntradas();
+  }
+
+  // Apagar entrada pelo ID
+  function apagar(id) {
+    let entradas = JSON.parse(localStorage.getItem('diarioEntradas') || '[]');
+    entradas = entradas.filter(e => e.id !== id);
+    localStorage.setItem('diarioEntradas', JSON.stringify(entradas));
+    mostrarEntradas();
+  }
+
+  // Exibir todas entradas
+  function mostrarEntradas() {
+    const diario = document.getElementById('diario');
+    const entradas = JSON.parse(localStorage.getItem('diarioEntradas') || '[]');
+    diario.innerHTML = '';
+    entradas.forEach(e => {
+      const div = document.createElement('div');
+      div.classList.add('entrada');
+      div.innerHTML = `
+        <button class="apagar-btn" onclick="apagar(${e.id})" title="Apagar esta entrada">Apagar</button>
+        <div class="data">${e.data}</div>
+        <div class="texto-entrada">${e.texto.replace(/\n/g, '<br>')}</div>
+      `;
+      diario.appendChild(div);
+    });
+  }
+
+  // Ajusta altura do textarea conforme digita
+  const textarea = document.getElementById('texto');
+  textarea.addEventListener('input', () => {
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
+  });
+
+  // Inicializa exibindo entradas salvas e ajusta textarea
+  mostrarEntradas();
+  ajustarHeight();
+
+  function ajustarHeight() {
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
+  }
+</script>
+
+</body>
+</html>
 
