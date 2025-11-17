@@ -1,1 +1,2 @@
-[Texto do link] https://lobiancocintia1.github.io/diario-das-emocoes.com
+[Diário das Emoções](https://lobiancocintia1.github.io/diario-das-emocoes/)
+
